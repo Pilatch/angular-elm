@@ -5078,10 +5078,11 @@ var elm$core$Platform$Cmd$batch = _Platform_batch;
 var elm$core$Platform$Cmd$none = elm$core$Platform$Cmd$batch(_List_Nil);
 var elm$core$Platform$Sub$batch = _Platform_batch;
 var elm$core$Platform$Sub$none = elm$core$Platform$Sub$batch(_List_Nil);
+var elm$core$String$fromFloat = _String_fromNumber;
 var elm$html$Html$div = _VirtualDom_node('div');
 var elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
 var elm$html$Html$text = elm$virtual_dom$VirtualDom$text;
-var elm$json$Json$Decode$int = _Json_decodeInt;
+var elm$json$Json$Decode$float = _Json_decodeFloat;
 var author$project$Numberator$main = elm$browser$Browser$element(
 	{
 		init: function (flag) {
@@ -5101,7 +5102,7 @@ var author$project$Numberator$main = elm$browser$Browser$element(
 				_List_fromArray(
 					[
 						elm$html$Html$text(
-						'The number ' + elm$core$String$fromInt(model))
+						'The number ' + elm$core$String$fromFloat(model))
 					]));
 		}
 	});
@@ -5109,7 +5110,7 @@ var elm$core$Debug$toString = _Debug_toString;
 var elm$json$Json$Decode$andThen = _Json_andThen;
 var elm$json$Json$Decode$bool = _Json_decodeBool;
 var elm$json$Json$Decode$field = _Json_decodeField;
-var elm$json$Json$Decode$float = _Json_decodeFloat;
+var elm$json$Json$Decode$int = _Json_decodeInt;
 var elm$json$Json$Decode$string = _Json_decodeString;
 var author$project$Nest$Deeply$Objectator$main = elm$browser$Browser$element(
 	{
@@ -5974,7 +5975,7 @@ var author$project$Foo$main = A2(
 		[
 			elm$html$Html$text('Foo!')
 		]));
-_Platform_export({'Foo':{'init':_VirtualDom_init(author$project$Foo$main)(0)(0)},'Numberator':{'init':author$project$Numberator$main(elm$json$Json$Decode$int)(0)},'Nest':{'Deeply':{'Objectator':{'init':author$project$Nest$Deeply$Objectator$main(
+_Platform_export({'Foo':{'init':_VirtualDom_init(author$project$Foo$main)(0)(0)},'Numberator':{'init':author$project$Numberator$main(elm$json$Json$Decode$float)(0)},'Nest':{'Deeply':{'Objectator':{'init':author$project$Nest$Deeply$Objectator$main(
 	A2(
 		elm$json$Json$Decode$andThen,
 		function (string) {
