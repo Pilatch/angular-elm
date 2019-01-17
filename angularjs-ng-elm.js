@@ -29,7 +29,7 @@
   }
 
   function link(scope, element, attrs) {
-    var ngInterface = scope.ngInterface && diveIntoObject(scope.$parent, scope.ngInterface)
+    var ngInterface = parseNgInterface(scope)
     var app = apps[attrs.module]
     var unsubscribers = []
     var host
@@ -59,39 +59,6 @@
       }
     }
 
-    function getElmModule(elmObject, moduleName) {
-      var module = diveIntoObject(elmObject, moduleName)
-      var availableModules, error
-
-      if (!module || !isValidModule(module)) {
-        availableModules = getElmModuleNames(elmObject)
-        error = 'Could not find an Elm module named "' + moduleName +
-            '". I found these Elm modules instead: ' + availableModules.join(', ')
-
-        throw new Error(error)
-      }
-      return module
-    }
-
-    function isValidModule(elmObject) {
-      return typeof elmObject.init === 'function'
-    }
-
-    function getElmModuleNames(elmObject) {
-      // If you have an Elm module, the JS Elm object will represent that module as one or more objects,
-      // with one object nested into the next per dot in the module name. Each module has an init function,
-      // so whenever we find such a function, we know we have found the end of the module name.
-      return Object.keys(elmObject).map(function(moduleName) {
-        if (isValidModule(elmObject[moduleName])) {
-          return [moduleName]
-        }
-
-        return getElmModuleNames(elmObject[moduleName]).map(function(subModuleName) {
-          return moduleName + '.' + subModuleName
-        })
-      })
-    }
-
     element.on('$destroy', function() {
       app.count--
       unsubscribers.forEach(function(unsubscribe) {
@@ -104,6 +71,12 @@
     })
 
     connectPorts(scope, ngInterface, app, unsubscribers)
+  }
+
+  // Helpers functions:
+
+  function branchId(app) {
+    return 'Elm-Tree-House-branch-' + app.name.split('.').join('_')
   }
 
   function connectPorts(scope, ngInterface, app, unsubscribers) {
@@ -153,10 +126,6 @@
     }
   }
 
-  function branchId(app) {
-    return 'Elm-Tree-House-branch-' + app.name.split('.').join('_')
-  }
-
   function createBranch(app) {
     var branch = document.createElement('div')
 
@@ -190,6 +159,58 @@
 
   function getAppWrapperFromTreeHouse(app) {
     return treeHouseBranch(app).firstChild
+  }
+
+  function getElmModule(elmObject, moduleName) {
+    var module = diveIntoObject(elmObject, moduleName)
+    var availableModules, error
+
+    if (!module || !isValidModule(module)) {
+      availableModules = getElmModuleNames(elmObject)
+      error = 'Could not find an Elm module named "' + moduleName +
+          '". I found these Elm modules instead: ' + availableModules.join(', ')
+
+      throw new Error(error)
+    }
+
+    return module
+  }
+
+  function getElmModuleNames(elmObject) {
+    // If you have an Elm module, the JS Elm object will represent that module as one or more objects,
+    // with one object nested into the next per dot in the module name. Each module has an init function,
+    // so whenever we find such a function, we know we have found the end of the module name.
+    return Object.keys(elmObject).map(function(moduleName) {
+      if (isValidModule(elmObject[moduleName])) {
+        return [moduleName]
+      }
+
+      return getElmModuleNames(elmObject[moduleName]).map(function(subModuleName) {
+        return moduleName + '.' + subModuleName
+      })
+    })
+  }
+
+  function isValidModule(elmObject) {
+    return typeof elmObject.init === 'function'
+  }
+
+  function parseNgInterface(scope) {
+    var value
+
+    try {
+      // For MyCtrl.foo and whatnot.
+      value = scope.ngInterface && diveIntoObject(scope.$parent, scope.ngInterface)
+    } catch (_) {}
+
+    if (typeof value === 'undefined') {
+      try {
+        // In case the user did something like `ng-interface="null"` or `ng-interface="33"` or passed JSON.
+        value = scope.$eval(scope.ngInterface)
+      } catch (_) {}
+    }
+
+    return value
   }
 
   function saveWrapperToTreeHouse(wrapper, app) {

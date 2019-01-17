@@ -45,12 +45,14 @@ There's a technical reason why it's rigged this way.
 If your Elm app does not use ports but requires only one flag, for instance a random seed, or user name, then you could pass that one value along.
 
     <ng-elm module="Game.Shuffler" ng-interface="gameCtrl.randomSeed"></ng-elm>
+    <ng-elm module="Numberator" ng-interface="33.3"></ng-elm>
     <ng-elm module="FortuneTeller" ng-interface="mysticalController.user.name"></ng-elm>
 
-For multiple flags pass an object, which could very well be your controller, or `$scope` if that's how you roll.
+For multiple flags pass an object, which could very well be JSON, your controller, or `$scope` if that's how you roll.
 
     <ng-elm module="Complex.Thingy" ng-interface="complexCtrl"></ng-elm>
     <ng-elm module="Some.Gizmo" ng-interface="gizmoCtrl.$scope"></ng-elm>
+    <ng-elm module="Jsonifier" ng-interface='{"Sebben": 7, "hybrid": "beefalo", "yes?": true}'></ng-elm>
 
 ### Communicate with AngularJS via ports
 
